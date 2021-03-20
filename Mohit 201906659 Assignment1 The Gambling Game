@@ -1,0 +1,113 @@
+//Name: Mohit
+//Student ID: 201906659
+//Date Submitted: March 20, 2021
+//CLass IN2203 Section Number G2
+// Name of work: Assignment 1: The Gambling Game
+
+import java.util.*;
+import java.util.Scanner;
+import java.util.Random;
+
+public class MainApplication {
+	public static void main(String[] args) {
+		Casino c = new Casino();
+		c.organizeNewGame();
+	}
+}
+
+class Casino{
+	Game g1 = new Game();
+	String userAnswer;
+	Scanner sc = new Scanner(System.in);
+	
+	public void organizeNewGame() {
+		System.out.print("Welcome to our Casino: Would you like to play a game? (y/n): ");
+		
+		userAnswer = sc.nextLine();
+		
+		if(userAnswer.equals("y")) {
+			System.out.println("let's get started");
+			g1.playGame();
+		}else {
+			System.out.println("Good Bye!");
+		}
+	}
+}
+
+class Game{
+	Random rand = new Random();
+	private int computerGuess = -1;
+	private int playerGuess = -1;
+	Player p1 = new Player();
+	ResultComputation rc = new RangeBasedComputation();
+	
+	public void playGame(){
+		System.out.println("Guess a number from 1 to 100");
+		System.out.println("And I will guess a game");
+		System.out.println("If your guess is within 20 of my guess: then you win. Else I will win!");
+		System.out.println("There will be 5 rounds.");
+		
+		for(int i = 1 ; i <= 5 ; i++) {
+			System.out.println();
+			System.out.println("Round "+i);
+			
+			// Taking input from the user
+			playerGuess = p1.getPlayerGuess();
+			computerGuess = computerGuess();
+			
+			System.out.println("Computer Guess is: "+computerGuess);
+			System.out.println("Your Guess is: "+playerGuess);
+			
+			printResults();
+		}
+		
+	}
+	
+	private void printResults() {
+		if(rc.computeResult(computerGuess, playerGuess)) {
+			System.out.println("You Win!!!");
+		}else {
+			System.out.println("You Lose!!!");
+		}
+	}
+
+	public int computerGuess() {
+		int programGuess = rand.nextInt(100);
+		return programGuess;
+	}
+}
+
+ class MultipleBasedComputation implements ResultComputation{
+	@Override
+	public boolean computeResult(int computerGuess, int playerGuess) {
+		boolean result = true;
+		if(playerGuess%3 == 0 || playerGuess%4 == 0) {
+			result = true;
+		}else {
+			result = false;
+		}
+		return result;
+	}
+}
+
+class Player{
+	Scanner sc = new Scanner(System.in);
+	public int getPlayerGuess() {
+		System.out.print("Your Guess: ");
+		String userGuess = sc.nextLine();
+		return Integer.valueOf(userGuess);
+	}
+}
+
+class RangeBasedComputation implements ResultComputation{
+
+	@Override
+	public boolean computeResult(int computerGuess, int playerGuess) {
+		return computerGuess-20 <= playerGuess && computerGuess+20 >= playerGuess;
+	}
+
+}
+
+ interface ResultComputation {
+	boolean computeResult(int computerGuess, int playerGuess);
+    }
